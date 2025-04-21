@@ -1,0 +1,5 @@
+happiness=3983
+battery=3547
+day_night=580
+day=6
+level=6
