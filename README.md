@@ -2,6 +2,8 @@
 
 **The PokéDeck** is a multifunctional **pocket watch** packed with cool features for developers and tech lovers. Inspired by the GitHub Badger and styled like a Pokédex, its both **useful** and **fun**!
 
+![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/bd15a1007fcbb0a5cf2deca561a3b4e89ce385e4_pokedeck_drawing_v1.png)
+
 It can be used to display your GitHub profile, play games, run timers, check sensor data, and carry a virtual pet! Powered by an **Orpheus Pico** (a custom **Raspberry Pi Pico**), the PokéDeck is open-source, rechargeable, and modular (kind of). It can be clipped to your bag, worn as a badge, or kept in your pocket!
 
 ---
