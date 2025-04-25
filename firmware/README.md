@@ -8,6 +8,7 @@ Take care of your Hackamon, charge it, play games and battle your way to the top
 ## Demo
 
 _Built to run on an **Orpheus Pico** powered custom pocketwatch!_
+_Tested on a **Sprig**!_
 
 ![Short Demo of full OS](https://cloud-ny2cxzjoa-hack-club-bot.vercel.app/0hackamon_demo.mp4)
 

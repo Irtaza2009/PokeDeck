@@ -1,16 +1,23 @@
+import board
 import displayio
-from blinka_displayio_pygamedisplay import PyGameDisplay
+from adafruit_st7735r import ST7735R
+import busio
+import digitalio
+from fourwire import FourWire
+
 from adafruit_display_text import label
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_shapes.rect import Rect
-import pygame
-import asyncio
+
+import storage
 import time
 import math
 import random
-import os
 
-pygame.init()
+
+
+
+displayio.release_displays()
 
 stats_file = "stats.txt"
 
@@ -38,9 +45,43 @@ menu_options = [
     {"text": "Hackamon", "unselected_tile": 3, "selected_tile": 7},
 ]
 
-display = PyGameDisplay(width=128, height=128)
+
+displayio.release_displays()
+spi = busio.SPI(clock=board.GP18, MOSI=board.GP19)
+tft_cs = board.GP20
+dc = board.GP22
+reset = board.GP26
+display_bus = FourWire(spi, command=dc, chip_select=tft_cs, reset=reset)
+display = ST7735R(display_bus, width=128, height=160, colstart=0, rowstart=0, bgr=True)
+display.rotation = 270
 splash = displayio.Group()
-display.show(splash)
+
+display.root_group = splash
+
+# --- Setup Buttons ---
+button_up = digitalio.DigitalInOut(board.GP12)
+button_up.direction = digitalio.Direction.INPUT
+button_up.pull = digitalio.Pull.UP  # Use internal pull-up
+
+button_left = digitalio.DigitalInOut(board.GP13)
+button_left.direction = digitalio.Direction.INPUT
+button_left.pull = digitalio.Pull.UP  # Use internal pull-up
+
+button_down = digitalio.DigitalInOut(board.GP14)
+button_down.direction = digitalio.Direction.INPUT
+button_down.pull = digitalio.Pull.UP  # Use internal pull-up
+
+button_right = digitalio.DigitalInOut(board.GP15)
+button_right.direction = digitalio.Direction.INPUT
+button_right.pull = digitalio.Pull.UP  # Use internal pull-up
+
+button_a = digitalio.DigitalInOut(board.GP5)
+button_a.direction = digitalio.Direction.INPUT
+button_a.pull = digitalio.Pull.UP  # Use internal pull-up
+
+button_b = digitalio.DigitalInOut(board.GP6)
+button_b.direction = digitalio.Direction.INPUT
+button_b.pull = digitalio.Pull.UP  # Use internal pull-up
 
 font = bitmap_font.load_font("fonts/PixelifySans-Regular.bdf")
 font8px = bitmap_font.load_font("fonts/pixelade-8px.bdf")
@@ -186,7 +227,7 @@ battery_bar_sprite = displayio.TileGrid(battery_bar_sheet,
                                     x=5,
                                     y=20)
 
-#splash.append(battery_bar_sprite)
+
 
 day_night_cycle_bar_sheet = displayio.OnDiskBitmap("assets/Day-Night-Bar-Spritesheet.bmp")
 day_night_cycle_bar_sprite = displayio.TileGrid(day_night_cycle_bar_sheet,
@@ -199,13 +240,7 @@ day_night_cycle_bar_sprite = displayio.TileGrid(day_night_cycle_bar_sheet,
                                     x=5,
                                     y=32)
 
-#splash.append(day_night_cycle_bar_sprite)
 
-#splash.append(button_1_sprite)
-
-#splash.append(button_2_sprite)
-
-#splash.append(button_3_sprite)
 
 charging_station_sheet = displayio.OnDiskBitmap("assets/Charging-Station.bmp")
 charging_station_sprite = displayio.TileGrid(charging_station_sheet,
@@ -259,9 +294,7 @@ pointer_left_sprite = displayio.TileGrid(pointer_left_sheet,
                                         x=10,
                                         y=10)
 
-#splash.append(pointer_sprite_1)
-#splash.append(pointer_sprite_2)
-#splash.append(pointer_sprite_3)
+
 
 player_card_sheet = displayio.OnDiskBitmap("assets/Player-Card-Spritesheet.bmp")
 player_card_sprite = displayio.TileGrid(player_card_sheet,
@@ -314,28 +347,26 @@ stopwatch_sprite = displayio.TileGrid(stopwatch_sheet,
                                     y=48)
 
 
-#splash.append(hackamon_sprite_idle)
 
-# read stats from file
 
 def read_stats():
-    
-    if os.path.exists(stats_file):
+    try:
         with open(stats_file, "r") as file:
-            lines = file.readlines()
             stats = {}
-            for line in lines:
-                key, value = line.strip().split("=")
-                stats[key] = int(value)
+            for line in file:
+                parts = line.strip().split("=")
+                if len(parts) == 2:
+                    key, value = parts
+                    stats[key] = int(value)
             return stats
-    return default_stats.copy()
-
-# write stats to file
+    except OSError:
+        return default_stats.copy()
 
 def write_stats(stats):
     with open(stats_file, "w") as file:
-        for key, value in stats.items():
-            file.write(f"{key}={value}\n")
+        for key in stats:
+            file.write("%s=%d\n" % (key, stats[key]))
+
 
 
 frame = 0
@@ -374,7 +405,7 @@ happiness_label = label.Label(
     anchored_position=(happiness_bar_sprite.x + 28, happiness_bar_sprite.y + 2)
 )
 
-#splash.append(happiness_label)
+
 
 battery_label = label.Label(
     font,
@@ -384,7 +415,7 @@ battery_label = label.Label(
     anchored_position=(battery_bar_sprite.x + 28, battery_bar_sprite.y + 2)
 )
 
-#splash.append(battery_label)
+
 
 level_label = label.Label(
     font24px,
@@ -812,21 +843,17 @@ def start_stopwatch():
         )
         splash.append(stopwatch_display)
 
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                ticking = False
-                splash.remove(stopwatch_start_label)
-                stopwatch_start_label = label.Label(font12px,
-                    text="Press to start!",
-                    color=0xFFFFFF,
-                    anchor_point=(0.5, 0.5),
-                    anchored_position=(display.width // 2, display.height - display.height // 4.5)
-                )
-                splash.append(stopwatch_start_label)
-                break
+        if not button_a.value:
+            ticking = False
+            splash.remove(stopwatch_start_label)
+            stopwatch_start_label = label.Label(font12px,
+                text="Press to start!",
+                color=0xFFFFFF,
+                anchor_point=(0.5, 0.5),
+                anchored_position=(display.width // 2, display.height - display.height // 4.5)
+            )
+            splash.append(stopwatch_start_label)
+            break
 
 
         if display.check_quit():
@@ -1244,34 +1271,32 @@ def to_menu(prevGameState):
 
 
 
-async def main():
-    global frame, framePointer, frameBackButton, isJumping, facing_left, gameState, charging, chargingSprite, current_selection, rolling, flipping, ticking, keys
+
+    global frame, framePointer, frameBackButton, isJumping, facing_left, gameState, charging, chargingSprite, current_selection, rolling, flipping, ticking
     while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                exit()
-            elif event.type == pygame.KEYDOWN and gameState == "Menu":
-                if event.key == pygame.K_LEFT:
-                    current_selection = (current_selection + 1) % len(menu_options)
-                    update_menu_selection()
+        
+        
+        if gameState == "Menu":
+            if not button_left.value:
+                current_selection = (current_selection + 1) % len(menu_options)
+                update_menu_selection()
 
-                if event.key == pygame.K_RIGHT:
-                    current_selection = (current_selection - 1) % len(menu_options)
-                    update_menu_selection()
+            if not button_right.value:
+                current_selection = (current_selection - 1) % len(menu_options)
+                update_menu_selection()
 
-                if event.key == pygame.K_SPACE:
-                    handle_selection()
+            if not button_a.value:
+                handle_selection()
 
         if display.check_quit():
             break
 
 
 
-        keys = pygame.key.get_pressed()
+        
 
         if game_over == False:
-            if keys[pygame.K_LEFT]:
+            if not button_left.value:
                 charging = False
                 if (gameState == "Main" and hackamon_sprite_idle.x > 24) or (gameState == "Station" and hackamon_sprite_idle.x > 0) or (gameState == "Breakout" and hackamon_sprite_idle.x > 0):
                     facing_left = True
@@ -1282,7 +1307,7 @@ async def main():
                 if gameState == "Dice" or gameState == "Coin" or gameState == "Stopwatch":
                     to_menu(gameState)
 
-            if keys[pygame.K_RIGHT]:
+            if not button_right.value:
                 charging = False
                 if (gameState == "Main" and hackamon_sprite_idle.x < 78) or (gameState == "Station" and hackamon_sprite_idle.x < 128 - tile_width) or (gameState == "Breakout" and hackamon_sprite_idle.x < 128 - tile_width):
                     facing_left = False
@@ -1292,7 +1317,7 @@ async def main():
                     hackamon_sprite_jump.flip_x = True
 
             # For testing! I know there will be only 3 buttons :)
-            if keys[pygame.K_UP]:
+            if not button_up.value:
                 charging = False
                 if (gameState == "Main" and hackamon_sprite_idle.y > 64 - 20) or (gameState == "Station" and hackamon_sprite_idle.y > 96 - 20):
                     hackamon_sprite_idle.y -= speed
@@ -1300,16 +1325,16 @@ async def main():
                 
 
                     
-            if keys[pygame.K_DOWN]:
+            if not button_down.value:
                 charging = False
                 if (gameState == "Main" and hackamon_sprite_idle.y < 92 - tile_height) or (gameState == "Station" and hackamon_sprite_idle.y < 128 - tile_height):
                     hackamon_sprite_idle.y += speed
                     hackamon_sprite_jump.y += speed
             
-            if keys[pygame.K_SPACE] and gameState == "Leaderboard":
+            if not button_a.value and gameState == "Leaderboard":
                     time.sleep(0.5)
                     to_main(gameState)
-            elif keys[pygame.K_SPACE] and not isJumping and not charging and gameState != "Menu" and gameState != "Dice" and gameState != "Coin" and gameState != "Stopwatch":        
+            elif not button_a.value and not isJumping and not charging and gameState != "Menu" and gameState != "Dice" and gameState != "Coin" and gameState != "Stopwatch":        
                 isJumping = True
                 splash.remove(hackamon_sprite_idle)
                 splash.append(hackamon_sprite_jump)
@@ -1317,13 +1342,13 @@ async def main():
                 check_button_press()
                 if gameState == "Station":
                     charging_station()
-            elif keys[pygame.K_SPACE] and gameState == "Dice" and not rolling:
+            elif not button_a.value and gameState == "Dice" and not rolling:
                 rolling = True
                 roll_dice()
-            elif keys[pygame.K_SPACE] and gameState == "Coin" and not flipping:
+            elif not button_a.value and gameState == "Coin" and not flipping:
                 flipping = True
                 flip_coin()
-            elif keys[pygame.K_SPACE] and gameState == "Stopwatch" and not ticking:
+            elif not button_a.value and gameState == "Stopwatch" and not ticking:
                 ticking = True
                 start_stopwatch()
                 
@@ -1366,6 +1391,4 @@ async def main():
         frame = (frame + 1) % (hackamon_sheet_idle.width // tile_width)
 
         time.sleep(0.1)
-        await asyncio.sleep(0)
 
-asyncio.run(main())
