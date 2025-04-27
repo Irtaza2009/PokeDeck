@@ -4,6 +4,14 @@
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/bd15a1007fcbb0a5cf2deca561a3b4e89ce385e4_pokedeck_drawing_v1.png)
 
+_I can't demo the PCB right now as I haven't gotten it yet so will be demoing the firmware instead! And yes the firmware will run without error on the PCB :). I have tested it on the Sprig with the Orpheus Pico!!_
+
+**3d Model**:
+![3d Model](https://files.slack.com/files-pri/T0266FRGM-F08PNK1688Y/image.png?pub_secret=d17f95e6ff)
+
+**Schematic**:
+![Schematic](https://hc-cdn.hel1.your-objectstorage.com/s/v3/101db1a496de3fed5413ddaba80aae821ac42628_schematic_pokedeck_2025-04-28.png)
+
 It can be used to display your GitHub profile, play games, run timers, check sensor data, and carry a virtual pet! Powered by an **Orpheus Pico** (a custom **Raspberry Pi Pico**), the PokéDeck is open-source, rechargeable, and modular (kind of). It can be clipped to your bag, worn as a badge, or kept in your pocket!
 
 ---
@@ -30,7 +38,7 @@ It can be used to display your GitHub profile, play games, run timers, check sen
 Charge your Hackamon, play games, check your timers, and more — all with retro pixel-art charm (drawn by me!!).  
 It's the heart of the PokéDeck.
 
-🎥 **Demo (running on Sprig):**  
+🎥 **Demo (running on Sprig):** _(Click to play video)_
 [![Hackamon OS Demo](https://hc-cdn.hel1.your-objectstorage.com/s/v3/7f209d53b91d2cdff0e3565f87ccc52355f96b45_image.png)](https://hc-cdn.hel1.your-objectstorage.com/s/v3/030cac5edc138051b9962804ac5a3dd1815fb0c6_hackamon_orpheus_pico_sprig.mp4)
 
 _Flip a Coin_
