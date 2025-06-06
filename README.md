@@ -1,6 +1,6 @@
 # PokéDeck
 
-**The PokéDeck** is a multifunctional **pocket watch** packed with cool features for developers and tech lovers. Inspired by the GitHub Badger and styled like a Pokédex, its both **useful** and **fun**!
+**The PokéDeck** is a multifunctional **pocket companion** (like a Tamagotchi) packed with cool features for developers and tech lovers. Inspired by the GitHub Badger and styled like a Pokédex, its both **useful** and **fun**!
 
 ![](https://hc-cdn.hel1.your-objectstorage.com/s/v3/bd15a1007fcbb0a5cf2deca561a3b4e89ce385e4_pokedeck_drawing_v1.png)
 
