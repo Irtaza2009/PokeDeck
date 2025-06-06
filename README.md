@@ -39,7 +39,11 @@ Charge your Hackamon, play games, check your timers, and more — all with retro
 It's the heart of the PokéDeck.
 
 🎥 **Demo (running on Sprig):** _(Click to play video)_
-[![Hackamon OS Demo](https://hc-cdn.hel1.your-objectstorage.com/s/v3/7f209d53b91d2cdff0e3565f87ccc52355f96b45_image.png)](https://hc-cdn.hel1.your-objectstorage.com/s/v3/030cac5edc138051b9962804ac5a3dd1815fb0c6_hackamon_orpheus_pico_sprig.mp4)
+
+[![Hackamon OS Demo](https://hc-cdn.hel1.your-objectstorage.com/s/v3/7f209d53b91d2cdff0e3565f87ccc52355f96b45_image.png)](https://sleeping.wtf/f-8B3hfi05_FPOMVXcGH-.mp4)
+
+<!-- [![Hackamon OS Demo](https://hc-cdn.hel1.your-objectstorage.com/s/v3/7f209d53b91d2cdff0e3565f87ccc52355f96b45_image.png)](https://hc-cdn.hel1.your-objectstorage.com/s/v3/030cac5edc138051b9962804ac5a3dd1815fb0c6_hackamon_orpheus_pico_sprig.mp4)
+-->
 
 _Flip a Coin_
 
@@ -56,6 +60,14 @@ _Stopwatch_
 _Breakout Minigame_
 
 ![Breaout Scene](https://cloud-d838srl6u-hack-club-bot.vercel.app/3hackamon_demo_breakout.gif)
+
+_Charging Station_
+
+![Charging Scene](https://cloud-d838srl6u-hack-club-bot.vercel.app/2hackamon_demo_charging_station.gif)
+
+_Leaderboard_
+
+![Leaderboard](https://cloud-d838srl6u-hack-club-bot.vercel.app/1hackamon_demo_leaderboard.gif)
 
 ---
 
